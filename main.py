@@ -22,6 +22,7 @@ def main():
         #This sets the fps to 60 and sets the miliseconds to the delta
         screen.fill((0, 0, 0))
         #Makes the screen black
+        player.update(dt)
         player.draw(screen)
         #Redraws player each frame
         pygame.display.flip()
