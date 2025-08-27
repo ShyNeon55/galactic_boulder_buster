@@ -1,10 +1,23 @@
 import pygame
 from constants import *
 from player import *
+from asteroid import *
+from asteroidfield import *
 
 
 def main():
     pygame.init()
+    
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+
+    AsteroidField.containers = (updatable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    Player.containers = (updatable, drawable)
+    
+    asteroid_feild = AsteroidField()
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
@@ -12,6 +25,9 @@ def main():
     print(f'Screen width: {SCREEN_WIDTH}')
     print(f'Screen height: {SCREEN_HEIGHT}')
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    
+    
+
     while True:
         #This keeps the game running
         for event in pygame.event.get():
@@ -22,9 +38,16 @@ def main():
         #This sets the fps to 60 and sets the miliseconds to the delta
         screen.fill((0, 0, 0))
         #Makes the screen black
-        player.update(dt)
-        player.draw(screen)
-        #Redraws player each frame
+        updatable.update(dt)
+
+        for asteroid in asteroids:
+            if asteroid.collision(player):
+                print("Game over!")
+                return
+        
+        for object in drawable:
+            object.draw(screen)
+        #Redraws drawables each frame
         pygame.display.flip()
         
 
