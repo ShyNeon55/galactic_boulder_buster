@@ -23,14 +23,26 @@ class Asteroid(CircleShape):
         
         new_radius = self.radius - ASTEROID_MIN_RADIUS
         
-        a_asteroid = Asteroid(self.position.x, self.position.y, new_radius)
-        b_asteroid = Asteroid(self.position.x, self.position.y, new_radius)
+        a = Asteroid(self.position.x, self.position.y, new_radius)
+        b = Asteroid(self.position.x, self.position.y, new_radius)
+        #^This creates two asteroids
         
-        a_velocity = self.velocity.rotate(random_angle) * 1.2
-        b_velocity = self.velocity.rotate(-random_angle) * 1.2
+        av, bv = self._split_velocities(scale = 1.2)
+        #^This splits the velocity from the original amongst the two new ones
 
-        a_asteroid.velocity = a_velocity
-        b_asteroid.velocity = b_velocity
+        a.velocity, b.velocity = av, bv
+        #^This assigns the new velocities to the new asteroids
         
+    
+    
+    #This creates a new method to simplify splitiing the velocities between the two asteroids
+    #Potentially need to change this if adding more asteroids in the future
+    def _split_velocities(self, scale = 1.0):
+        angle = random.uniform(20, 50)
+        v = self.velocity
+        #This gaurds against asteroids with no velocity
+        if self.velocity.length_squared() < 1e-6:
+            self.velocity = pygame.Vector2(1, 0).rotate(random.uniform(0, 360))
+        return v.rotate(angle) * scale, v.rotate(-angle) * scale
 
         
